@@ -73,6 +73,8 @@ Prefer browsing in-repo instead? Start at
 | Code review | Ask Claude to review | `@code-reviewer` enforces the conventions with file:line citations |
 | Complex work | Monolithic context | Delegate to specialized subagents; main context stays clean |
 | UX & design | Describe and hope | `@ux-designer` → `@figma-designer` → `@frontend-architect` pipeline |
+| Feature build | Hand-drive every `Agent` call yourself, every time | `/dev-flow` — deterministic design-gate + review-gate loops, one human approval gate |
+| e2e/regression QA | Manual click-through before every release | `@qa-engineer` — evidence-backed verification, web + mobile |
 | New machine | Redo everything | `./install.sh` |
 
 ## Install
@@ -137,13 +139,14 @@ merge any custom permissions/hooks back from the backup).
 | `rules/engineering-loop.md` | Always-on plan→verify→commit model + anti-patterns; sets diagram-rich (mermaid) plan/design-doc standards | Authored |
 | `rules/{java,go,typescript}.md` | **Thin auto-loaded pointers** (Tier 1) — route to the references | Authored (routing only, no convention text) |
 | `references/{go,java,typescript}/` | **Convention guides + linked authorities, read on-demand** (Tier 2) | Go: codebase-derived from app-erp; Java/TS: vendored from recognized sources — see each `README.md` |
-| `agents/*.md` | Subagents: code-reviewer, debugger, architect-reviewer, backend-architect, frontend-architect, ux-designer, figma-designer, feature-investigator, backend-developer, frontend-developer, saas-legal-advisor, cloud-architect, devops-engineer | **Vendored + pinned** (except `backend-architect`/`frontend-architect`/`ux-designer`/`figma-designer`/`backend-developer`/`frontend-developer`/`saas-legal-advisor`, authored) — see `AGENTS_SOURCES.md` |
+| `agents/*.md` | Subagents: code-reviewer, debugger, architect-reviewer, backend-architect, frontend-architect, ux-designer, figma-designer, feature-investigator, backend-developer, frontend-developer, saas-legal-advisor, cloud-architect, devops-engineer, qa-engineer | **Vendored + pinned** (except `backend-architect`/`frontend-architect`/`ux-designer`/`figma-designer`/`backend-developer`/`frontend-developer`/`saas-legal-advisor`/`qa-engineer`, authored) — see `AGENTS_SOURCES.md` |
 | `AGENTS_SOURCES.md` | Provenance table for vendored agents (source repo, commit SHA, changes) — kept at repo root, not inside `agents/`, since the Claude Code plugin auto-discovers every `.md` file in `agents/` as an agent | Authored |
 | `skills/adr/` | `/adr` — record Architecture Decision Records (**MADR 4.0**) | Adopts MADR (see `skills/SOURCES.md`) |
-| `skills/save-plan/` | `/save-plan` — persist an **implementation plan** to `docs/plans/` (or `--temp`) so mermaid renders in an IDE/GitHub. Architecture designs → `docs/solutions/`; review reports → `docs/architecture-reports/` (written directly by the relevant agent) | Authored |
+| `skills/save-plan/` | `/save-plan` — persist an **implementation plan** to `docs/work/<slug>/plans/` (or `--temp`) so mermaid renders in an IDE/GitHub. Architecture designs → `docs/work/<slug>/solutions/`; review reports → `docs/work/<slug>/architecture-reports/` (written directly by the relevant agent) | Authored |
 | `skills/go-conventions/` | `/go-conventions [--refresh]` — scan a Go repo and write `.claude/go-conventions.md` (project-specific layer on top of the global baseline) | Authored |
 | `skills/design-conventions/` | `/design-conventions [--refresh]` — scan a TS/React project's existing UI layer and write `.claude/design-conventions.md` (visual design language: tokens, type/spacing/color scales, component lib, layout rhythm, state patterns). For greenfield projects, `@frontend-architect` generates this file instead. | Authored |
 | `skills/setup/` | `/addit-harness:setup [--scope global\|project] [--link]` — places `CLAUDE.md`/`AGENTS.md`/`rules/`/`references/`/`settings.json` for Claude Code (the parts the plugin can't carry natively) | Authored |
+| `skills/dev-flow/` + `workflows/*.js` | `/dev-flow [what to build or fix]` — deterministic SDLC orchestration: investigate → design ⇄ `architect-reviewer` loop → **your approval gate** → implement → `qa-engineer` verifies → review ⇄ fix loop → re-verify. The loops run as `Workflow` scripts (`workflows/dev-flow-design.js`, `workflows/dev-flow-implement.js`); the skill holds the one human gate a script can't pause for. See [How dev-flow works](https://tools.addit.digital/harness/docs/dev-flow/) for the phase-by-phase mechanics and loop-termination logic. **Claude Code plugin install only** — relies on `${CLAUDE_PLUGIN_ROOT}` and the `Workflow` tool, neither of which exist under the legacy copy-based `install.sh --target claude` path or on Cursor/Kiro/Codex CLI; not synced by `install.sh` | Authored |
 | `hooks/` | `SessionStart` hook — reminds the user to re-run `/addit-harness:setup` once the plugin's version has drifted past what was last synced (tracked via a version marker `setup.sh` writes per scope) | Authored |
 | `settings.json` | Default model + permissions + official plugins (`enabledPlugins`) — Claude Code only, placed by `/addit-harness:setup` or `install.sh --target claude` | Authored |
 | `mcp.example.json` | Disabled Atlassian/DB scaffolding (opt-in) | Reference config |
@@ -267,13 +270,26 @@ structures, write tests, and verify code against the conventions — and
 manifests/Dockerfiles/CI pipelines against a `@cloud-architect` design, plus
 hands-on Linux systems administration — systemd, networking, SSH, logs — on
 the VMs/nodes underneath; prefers the cloud/infra MCP servers in
-`mcp.example.json` when connected, falls back to the provider CLI otherwise).
+`mcp.example.json` when connected, falls back to the provider CLI otherwise),
+and `@qa-engineer` (verifies an implemented feature via e2e/regression testing —
+writes scenarios, implements them as executable tests, runs them, reports with
+mandatory evidence per claim; not unit/integration tests, which stay with the
+developer agents; web verification requires `claude-in-chrome` connected).
 
 ## Use cases
 
 Concrete workflows showing which configs fire together.
 
 **Build a new feature**
+
+`/dev-flow` automates this exact walkthrough end-to-end — investigate → design ⇄
+`@architect-reviewer` loop → your approval gate → implement → `@qa-engineer`
+verifies → `@code-reviewer` ⇄ fix loop → re-verify — as deterministic `Workflow`
+scripts instead of hand-driving each step below yourself. The steps below still
+apply if you'd rather drive them by hand, or when the request doesn't fit the
+software-development-lifecycle shape `/dev-flow` is scoped to (e.g. legal-only or
+infra-only work). See [How dev-flow works](https://tools.addit.digital/harness/docs/dev-flow/)
+for the phase-by-phase mechanics and how the design/review loops know when to stop.
 
 ```mermaid
 flowchart LR
@@ -282,9 +298,10 @@ flowchart LR
   UX["@ux-designer\nflows · wireframes · IA"]
   FG["@figma-designer *(optional)*\nFigma frames + tokens"]
   FA["@frontend-architect\ncomponent architecture"]
-  SP["/save-plan → docs/plans/\nTaskCreate tracked steps"]
+  SP["/save-plan → docs/work/<slug>/plans/\nTaskCreate tracked steps"]
   BD["@backend-developer"]
   FE["@frontend-developer"]
+  QA["@qa-engineer\ne2e/regression verify"]
   CR["@code-reviewer\nconventions + security"]
 
   FI --> LA
@@ -295,8 +312,9 @@ flowchart LR
   FG --> FA
   FA --> SP
   SP --> BD & FE
-  BD --> CR
-  FE --> CR
+  BD --> QA
+  FE --> QA
+  QA --> CR
 ```
 
 1. `@feature-investigator` → requirements/scope (spec/PRD-lite) before any code.
@@ -307,21 +325,24 @@ flowchart LR
    the feature — not after.
 3. `@ux-designer` → user flows, journey map, IA, wireframes, state matrix, and
    interaction specs. Reads `.claude/design-conventions.md`; flags design system
-   gaps for `@frontend-architect`. Saves spec to `docs/solutions/`.
+   gaps for `@frontend-architect`. Saves spec to `docs/work/<slug>/solutions/`.
 4. `@figma-designer` *(optional)* → materializes the UX spec into Figma frames,
    components, auto-layout, and tokens via the official Figma MCP. Requires the
    Figma plugin + MCP connected (see *Enabling MCP*).
 5. `@frontend-architect` → component/rendering/state architecture informed by the
    UX spec; resolves any design system gaps flagged by `@ux-designer` or
    `@figma-designer`.
-6. Plan it — a diagram-rich plan (mermaid), then `/save-plan` → `docs/plans/`
+6. Plan it — a diagram-rich plan (mermaid), then `/save-plan` → `docs/work/<slug>/plans/`
    to view it rendered in an IDE/GitHub (the terminal can't render mermaid).
    TaskCreate a tracked task list from the plan's phased steps so status is
    visible; TaskUpdate each task as it completes.
 7. Implement — `@backend-developer` and/or `@frontend-developer` write + verify
    the code; Tier-1 `rules/<lang>.md` auto-load per file type and they read the
    vendored `references/<lang>/` guides on demand.
-8. `@code-reviewer` → checks correctness, security, *and* adherence to the
+8. `@qa-engineer` → verifies the implemented feature via e2e/regression testing,
+   evidence-backed (not the unit/integration tests from step 7 — a separate,
+   UI-level check that the feature actually works).
+9. `@code-reviewer` → checks correctness, security, *and* adherence to the
    vendored conventions (file:line violations).
 
 **Review or debug existing code**
@@ -330,9 +351,9 @@ flowchart LR
 
 **Design or implement infrastructure**
 - `@cloud-architect` for up-front design (new environment, migration, multi-cloud
-  strategy) → design doc saved to `docs/solutions/`.
+  strategy) → design doc saved to `docs/work/<slug>/solutions/`.
 - `@cloud-architect` to **audit existing infrastructure** (cost, security,
-  reliability, IaC drift) → review report saved to `docs/architecture-reports/`
+  reliability, IaC drift) → review report saved to `docs/work/<slug>/architecture-reports/`
   with Critical/Important/Advisory findings, same pattern as `@architect-reviewer`.
 - `@devops-engineer` to implement the design or act on the review's findings —
   writes and verifies actual Terraform/Kubernetes manifests/Dockerfiles/CI config,
@@ -345,9 +366,9 @@ flowchart LR
 
 **Make an architecture decision**
 - `@backend-architect` (API/service) or `@frontend-architect` (component/rendering/state)
-  produce a design doc → saved to `docs/solutions/<date>-<slug>.md`.
+  produce a design doc → saved to `docs/work/<slug>/solutions/solution-<track>.md`.
 - `@architect-reviewer` evaluates an existing design → saved to
-  `docs/architecture-reports/<date>-<slug>.md`.
+  `docs/work/<slug>/architecture-reports/report.md`.
 - Record the decision with `/adr` (MADR) under `docs/adr/`.
 
 **Assess legal impact before shipping a feature**
@@ -442,6 +463,7 @@ prevented) and Sonnet's strong, cheaper execution against your rules.
 | `saas-legal-advisor` | `opus` | Legal reasoning + compliance assessment — high-stakes advisory; wrong guidance is costly |
 | `cloud-architect` | `opus` | Infra design + review — mistakes are costly and often hard to reverse |
 | `devops-engineer` | `sonnet` | Implementation/execution against a design — fast + cheap, same rationale as the other `*-developer` agents |
+| `qa-engineer` | `sonnet` | e2e/regression verification execution — running and reporting against a given scenario, not designing one |
 
 Future mechanical agents (test-runners, formatters) should use `haiku`. Override
 all subagents at once with `CLAUDE_CODE_SUBAGENT_MODEL`.
@@ -493,14 +515,14 @@ See [open issues](https://github.com/addit-digital/addit-harness/issues?q=label%
   above. Each has its own manifest format and real gaps (Kiro Powers can't
   bundle custom agents; Codex CLI has an open team-rollout limitation), so
   each is its own follow-up rather than one change — see
-  `docs/plans/2026-07-10-claude-code-plugin-packaging.md`'s *Out of scope*.
+  `docs/work/2026-07-10-claude-code-plugin-packaging/plans/plan.md`'s *Out of scope*.
 - **GitHub Copilot support** — project-scoped bundle (`.github/copilot-instructions.md`,
   `.github/instructions/*.instructions.md`, `.github/agents/*.agent.md`), since
   Copilot has no machine-wide home directory to sync into like the other tools
 - **Skills as real slash-commands/prompts** per tool (`.cursor/commands/`, Kiro
   manual-inclusion steering, `~/.codex/prompts/`, `.github/prompts/*.prompt.md`)
   with correct invocation semantics, not just file placement
-- `/design-review` skill — audit a `docs/solutions/` design doc against the project's conventions
+- `/design-review` skill — audit a `docs/work/<slug>/solutions/` design doc against the project's conventions
 - `@security-reviewer` subagent — dedicated security-focused review pass
 
 Contributions welcome — see [`CONTRIBUTING.md`](CONTRIBUTING.md). Issues labeled [`good first issue`](https://github.com/addit-digital/addit-harness/issues?q=label%3A%22good+first+issue%22) are a good entry point.

@@ -288,6 +288,8 @@ Always prioritize long-term sustainability, scalability, and maintainability whi
 
 ## Output
 
-Save the completed review report to `docs/architecture-reports/<YYYY-MM-DD>-<slug>.md`
-(create the folder and add a row to `docs/architecture-reports/README.md` if they
-don't exist yet). Do not commit or push unless the user asks.
+Save the completed review report to `docs/work/<slug>/architecture-reports/report.md`
+(create the folder and add a row to `docs/work/README.md` if they
+don't exist yet; on a repeat review round for the same work item, suffix the
+filename `report-r2.md`, `report-r3.md`, etc. rather than overwriting). Do not
+commit or push unless the user asks.

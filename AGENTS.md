@@ -33,8 +33,9 @@ project's own `CLAUDE.md` (see `templates/CLAUDE.project.md`), not here.
   `/simplify`, `/verify`, `/run`, `/init`, and `deep-research` already exist —
   use them rather than reinventing.
 - Make plans and design docs visual: diagram-rich (mermaid) and saved to the
-  repo — implementation plans via `/save-plan` → `docs/plans/`, architecture
-  designs → `docs/solutions/`, review reports → `docs/architecture-reports/`.
+  repo — one folder per work item under `docs/work/<slug>/`: implementation
+  plans via `/save-plan` → `plans/`, architecture designs → `solutions/`,
+  review reports → `architecture-reports/`.
   See the engineering loop for the full taxonomy. Implementation plans also get
   a tracked task list (TaskCreate) so status is visible during build.
 - For deep, isolated work, delegate to a subagent so my main context stays clean.

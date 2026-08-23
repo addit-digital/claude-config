@@ -8,7 +8,7 @@
 # better install path: a native plugin (agents/skills/references, tracked by
 # git automatically) plus the /addit-harness:setup skill (rules/settings.json,
 # which plugins can't carry). See the README's Install section, or
-# docs/plans/2026-07-10-claude-code-plugin-packaging.md for why. `--target
+# docs/work/2026-07-10-claude-code-plugin-packaging/plans/plan.md for why. `--target
 # claude` still works below as an explicit legacy path for anyone who'd
 # rather not use plugins.
 #
@@ -21,7 +21,7 @@
 #
 # copilot is project-scoped (lives in a repo's .github/, not a home
 # directory) and is not covered by auto-detect — force it explicitly from
-# inside the target project. Not yet implemented (see docs/plans/).
+# inside the target project. Not yet implemented (see docs/work/).
 #
 # MCP is intentionally NOT synced for any tool. mcp.example.json is a
 # disabled, human-curated catalogue (see its own "_README" entry) meant for
@@ -183,7 +183,7 @@ echo
 
 if [[ "$FORCE_TARGET" == "copilot" ]]; then
   info "copilot is project-scoped (.github/ inside a repo, not a home directory)"
-  info "and is not implemented yet — see docs/plans/2026-07-10-multi-tool-agent-config.md"
+  info "and is not implemented yet — see docs/work/2026-07-10-multi-tool-agent-config/plans/plan.md"
   exit 0
 fi
 

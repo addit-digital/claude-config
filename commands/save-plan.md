@@ -1,5 +1,5 @@
 ---
-description: Use when the user wants to save, export, or persist a plan (or any diagram-rich design doc shown in the CLI) to a markdown file so it can be opened and viewed with rendered mermaid diagrams. The terminal can't render mermaid; this writes the plan to docs/plans/ (or a temp scratch file) for viewing in an IDE preview or on GitHub.
+description: Use when the user wants to save, export, or persist a plan (or any diagram-rich design doc shown in the CLI) to a markdown file so it can be opened and viewed with rendered mermaid diagrams. The terminal can't render mermaid; this writes the plan to docs/work/<slug>/plans/ (or a temp scratch file) for viewing in an IDE preview or on GitHub.
 argument-hint: "[short plan title] [--temp]"
 ---
 

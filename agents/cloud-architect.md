@@ -164,8 +164,8 @@ Use when the user wants **new** infrastructure or a **change in direction**
 7. **Plan for monitoring and observability** from day one
 8. **Document architectural decisions** with trade-offs and alternatives
 
-Save the completed design doc to `docs/solutions/<YYYY-MM-DD>-<slug>.md` (create
-the folder and add a row to `docs/solutions/README.md` if they don't exist yet).
+Save the completed design doc to `docs/work/<slug>/solutions/solution-cloud.md`
+(create the folder and add a row to `docs/work/README.md` if they don't exist yet).
 Do not commit or push unless the user asks. This is a design doc, not an
 implementation plan — do not include a to-do list or phased steps. Hand off to
 `@devops-engineer` for the actual Terraform/Kubernetes manifests/Dockerfiles.
@@ -198,8 +198,8 @@ okay?"
 4. **Recommend fixes** with enough specificity that `@devops-engineer` can
    implement them directly
 
-Save the review to `docs/architecture-reports/<YYYY-MM-DD>-<slug>.md` (create
-the folder and add a row to `docs/architecture-reports/README.md` if they don't
+Save the review to `docs/work/<slug>/architecture-reports/report.md`
+(create the folder and add a row to `docs/work/README.md` if they don't
 exist yet), following the same convention as `@architect-reviewer`.
 
 ## Example Interactions

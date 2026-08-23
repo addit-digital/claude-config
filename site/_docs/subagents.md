@@ -25,6 +25,7 @@ Model tiers are covered in full on [Model & cost](../model-cost/).
 - [backend-developer](#backend-developer)
 - [frontend-developer](#frontend-developer)
 - [devops-engineer](#devops-engineer)
+- [qa-engineer](#qa-engineer)
 </div>
 
 ## code-reviewer
@@ -41,14 +42,14 @@ escalate with `/model` if it gets stuck.
 ## architect-reviewer
 
 Evaluates an existing architecture/design → a review report saved to
-`docs/architecture-reports/`. `opus` tier: high-value, infrequent design
-judgment.
+`docs/work/<slug>/architecture-reports/`. `opus` tier: high-value, infrequent
+design judgment.
 
 ## backend-architect
 
 Up-front API/service design only (not implementation) → a design doc saved
-to `docs/solutions/`. `opus` tier: design decisions prevent downstream
-rework.
+to `docs/work/<slug>/solutions/`. `opus` tier: design decisions prevent
+downstream rework.
 
 ## frontend-architect
 
@@ -110,6 +111,15 @@ and CI pipelines against a cloud-architect design, plus hands-on Linux
 systems administration (systemd, networking, SSH, logs). Prefers the
 cloud/infra MCP servers in `mcp.example.json` when connected, falls back to
 the provider CLI otherwise. `sonnet` tier — implementation against a design.
+
+## qa-engineer
+
+Verifies an implemented feature via e2e/regression testing — writes scenarios,
+implements them as executable test code (Playwright, Maestro, or whatever fits
+the target repo), runs them, and reports with mandatory evidence per claim. Not
+unit/integration tests (stays with the developer agents); web verification
+requires `claude-in-chrome` connected. `sonnet` tier — execution against a given
+scenario, not designing one.
 
 ## Next
 

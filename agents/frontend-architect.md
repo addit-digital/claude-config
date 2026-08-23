@@ -259,8 +259,8 @@ Design frontend systems with clear component boundaries, well-defined data contr
 
 ## Output Format
 
-Save the completed design doc to `docs/solutions/<YYYY-MM-DD>-<slug>.md` (create
-the folder and add a row to `docs/solutions/README.md` if they don't exist yet).
+Save the completed design doc to `docs/work/<slug>/solutions/solution-frontend.md`
+(create the folder and add a row to `docs/work/README.md` if they don't exist yet).
 Do not commit or push unless the user asks. This is a design doc, not an
 implementation plan — do not include a to-do list or phased steps.
 
@@ -282,5 +282,5 @@ When designing frontend architecture, provide:
   (color tokens, type scale, spacing rhythm, component lib, breakpoints, state
   patterns) that `@frontend-developer` loads each session. This is separate from
   the design narrative: the full rationale (token-tier reasoning, reference
-  screens, diagrams) goes in `docs/solutions/` as usual; the `.claude/` file is
+  screens, diagrams) goes in `docs/work/<slug>/solutions/` as usual; the `.claude/` file is
   just the distilled ruleset the developer follows.

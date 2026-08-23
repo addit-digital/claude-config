@@ -2,7 +2,7 @@ name: Docs staleness check
 
 # Non-blocking nudge: if a PR bumps plugin.json's version but doesn't touch
 # the docs, remind the author to consider updating them too. See
-# docs/plans/2026-07-11-harness-website.md, Phase 3.
+# docs/work/2026-07-11-harness-website/plans/plan.md, Phase 3.
 on:
   pull_request:
     paths:

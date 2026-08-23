@@ -192,8 +192,8 @@ Design for the user's mental model first, then map it to implementation. Every f
 
 ## Output Format
 
-Save the completed design doc to `docs/solutions/<YYYY-MM-DD>-<slug>.md` (create
-the folder and add a row to `docs/solutions/README.md` if they don't exist yet).
+Save the completed design doc to `docs/work/<slug>/solutions/solution-ux.md`
+(create the folder and add a row to `docs/work/README.md` if they don't exist yet).
 Do not commit or push unless the user asks. This is a design doc, not an
 implementation plan — do not include a to-do list or phased steps.
 

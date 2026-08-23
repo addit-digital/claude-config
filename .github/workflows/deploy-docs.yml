@@ -4,7 +4,7 @@ name: Deploy docs
 # dispatch, since a real tag push can't be safely test-triggered mid-build-out.
 # addit-harness never enables its own GitHub Pages — this workflow builds the
 # site and publishes it into the addit-digital/addit-tools-web hub repo's `harness/`
-# subfolder instead. See docs/plans/2026-07-11-harness-website.md, Phase 3.
+# subfolder instead. See docs/work/2026-07-11-harness-website/plans/plan.md, Phase 3.
 on:
   push:
     tags:
