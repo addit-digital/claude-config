@@ -25,8 +25,8 @@ and auto-loads into every session. Two hard rules fall out of it:
   unverified and what would prove it.
 - **Plan before non-trivial work**, with diagrams (mermaid) for anything that
   touches architecture or flow — the terminal can't render mermaid, so
-  `/save-plan` persists plans to `docs/plans/` for viewing in an IDE or on
-  GitHub.
+  `/save-plan` persists plans to `docs/work/<slug>/plans/` for viewing in an IDE
+  or on GitHub.
 
 ## Language conventions — two tiers + per-project layer
 

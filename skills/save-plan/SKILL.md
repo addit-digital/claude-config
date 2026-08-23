@@ -1,6 +1,6 @@
 ---
 name: save-plan
-description: Use when the user wants to save, export, or persist a plan (or any diagram-rich design doc shown in the CLI) to a markdown file so it can be opened and viewed with rendered mermaid diagrams. The terminal can't render mermaid; this writes the plan to docs/plans/ (or a temp scratch file) for viewing in an IDE preview or on GitHub.
+description: Use when the user wants to save, export, or persist a plan (or any diagram-rich design doc shown in the CLI) to a markdown file so it can be opened and viewed with rendered mermaid diagrams. The terminal can't render mermaid; this writes the plan to docs/work/<slug>/plans/ (or a temp scratch file) for viewing in an IDE preview or on GitHub.
 user-invocable: true
 argument-hint: "[short plan title] [--temp]"
 ---
@@ -22,41 +22,50 @@ plan exists yet, say so and stop — don't invent one.
 ## Where it goes — artifact routing
 
 This skill is for **implementation plans** (phased steps, to-do lists, acceptance
-criteria). The broader taxonomy:
+criteria). Docs are grouped by unit of work, not by type: one folder per feature,
+bug fix, improvement, or enhancement at `docs/work/<slug>/`, holding everything
+produced for it in per-type subfolders. The broader taxonomy:
 
-| Artifact | Folder | Produced by |
+| Artifact | Subfolder | Produced by |
 |----------|--------|-------------|
-| Implementation plan | `docs/plans/` | This skill (default) |
-| Architecture design / solution doc (no to-do list) | `docs/solutions/` | `@backend-architect`, `@frontend-architect` directly |
-| Architecture review report | `docs/architecture-reports/` | `@architect-reviewer` directly |
+| Implementation plan | `plans/` | This skill (default) |
+| Architecture design / solution doc (no to-do list) | `solutions/` | `@backend-architect`, `@frontend-architect` directly |
+| Architecture review report | `architecture-reports/` | `@architect-reviewer` directly |
+| QA/regression verification report | `qa-reports/` | `@qa-engineer` directly |
 
-For a pure architecture design or review report, skip this skill — the relevant
-agent writes directly to the correct folder following the same naming convention
-(`<YYYY-MM-DD>-<slug>.md`, create folder + `README.md` index row if missing).
+For a pure architecture design, review report, or QA report, skip this skill —
+the relevant agent writes directly to the correct subfolder inside
+`docs/work/<slug>/`, following the same naming convention (create the folder + a
+`docs/work/README.md` index row if missing).
 
 ## Choosing permanent vs temporary
-- **Permanent** (default): `docs/plans/<YYYY-MM-DD>-<kebab-title>.md`, tracked in
-  git. Best for design docs worth keeping and for remote sessions (push → view on
-  GitHub).
+- **Permanent** (default): `docs/work/<YYYY-MM-DD>-<kebab-title>/plans/plan.md`
+  (or `docs/work/<ticket-id>-<kebab-title>/plans/plan.md` if the project uses an
+  issue tracker), tracked in git. Best for design docs worth keeping and for
+  remote sessions (push → view on GitHub).
 - **Temporary** (`--temp`): a scratch file under `.plans/` (gitignored) for quick
   local viewing without committing. Mainly useful in **local** CLI sessions — in a
   remote/container session a temp file isn't on your machine, so prefer permanent
   + push there.
 
 ## Procedure
-1. **Resolve the title.** Use the given title (kebab-case it); otherwise derive a
-   short slug from the plan's heading.
+1. **Resolve the slug.** Use the given title (kebab-case it); otherwise derive a
+   short slug from the plan's heading. Prefix with the issue-tracker ID if the
+   project uses one and the plan is tied to a ticket, else `<YYYY-MM-DD>-`.
 2. **Pick the path.**
-   - Default: ensure `docs/plans/` exists (create it + a `docs/plans/README.md`
-     index if missing). Target `docs/plans/<YYYY-MM-DD>-<slug>.md`. If the repo
-     already has a plans/design-docs location, follow that instead.
+   - Default: ensure `docs/work/<slug>/plans/` exists (create it, and
+     `docs/work/README.md` with an index if missing). Target
+     `docs/work/<slug>/plans/plan.md` — the file is always named `plan.md`; the
+     slug lives in the folder name, not the filename, so everything produced for
+     this work item sits together. If the repo already has a plans/design-docs
+     location, follow that instead.
    - `--temp`: ensure `.plans/` exists and is in `.gitignore` (add the line if
-     missing); target `.plans/<YYYY-MM-DD>-<slug>.md`. If not in a repo, fall back
+     missing); target `.plans/<slug>.md`. If not in a repo, fall back
      to the system temp dir.
 3. **Write** the plan content to the file verbatim (mermaid intact). Don't strip
    or "fix" diagrams.
-4. **Update the index** (permanent only): add a row to `docs/plans/README.md` —
-   date, title (link), one-line summary.
+4. **Update the index** (permanent only): add a row to `docs/work/README.md` —
+   date, title (link to `<slug>/plans/plan.md`), one-line summary.
 5. **Report** the absolute path and how to view it rendered:
    - Local: "open in Cursor / VS Code and toggle preview (Ctrl/Cmd+Shift+V)."
    - Remote/container session: "this file is in the container — commit & push,

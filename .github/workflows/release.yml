@@ -5,7 +5,7 @@ name: Release
 # CI-runnable path for the same steps documented in
 # site/_docs/extending.md#releasing-the-claude-code-plugin; `claude plugin
 # tag --push` run locally still works exactly as before. See
-# docs/plans/2026-07-11-harness-website.md, Phase 5.
+# docs/work/2026-07-11-harness-website/plans/plan.md, Phase 5.
 on:
   workflow_dispatch:
     inputs:

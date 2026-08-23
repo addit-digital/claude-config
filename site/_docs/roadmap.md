@@ -21,8 +21,8 @@ for planned work. Candidates:
   Kiro manual-inclusion steering, `~/.codex/prompts/`,
   `.github/prompts/*.prompt.md`) with correct invocation semantics, not just
   file placement.
-- **`/design-review` skill** — audit a `docs/solutions/` design doc against
-  the project's conventions.
+- **`/design-review` skill** — audit a `docs/work/<slug>/solutions/` design doc
+  against the project's conventions.
 - **`@security-reviewer` subagent** — dedicated security-focused review
   pass.
 

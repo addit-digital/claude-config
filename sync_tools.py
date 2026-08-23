@@ -6,7 +6,7 @@ Interprets tools.config.json to decide, per artifact class (baseline, rules,
 references, agents, skills, mcp), whether to place a file/tree as-is or run
 one of a small number of transforms (frontmatter field rename, Kiro tool-tag
 remap, Codex TOML conversion). Called by install.sh once per detected/forced
-tool — see docs/plans/2026-07-10-multi-tool-agent-config.md for the design.
+tool — see docs/work/2026-07-10-multi-tool-agent-config/plans/plan.md for the design.
 
 MCP is intentionally out of scope: mcp.example.json is a disabled,
 human-curated catalogue for manual copy-paste (see its own "_README" entry),

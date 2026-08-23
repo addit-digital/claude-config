@@ -10,6 +10,13 @@ plain text for reference.
 
 ## Build a new feature
 
+`/dev-flow` automates this exact walkthrough end-to-end — investigate → design ⇄
+`@architect-reviewer` loop → your approval gate → implement → `@qa-engineer`
+verifies → `@code-reviewer` ⇄ fix loop → re-verify — as deterministic `Workflow`
+scripts instead of hand-driving each step below yourself. The steps below still
+apply if you'd rather drive them by hand, or when the request doesn't fit the
+software-development-lifecycle shape `/dev-flow` is scoped to.
+
 ```mermaid
 flowchart LR
   FI["@feature-investigator\nspec / PRD-lite"]
@@ -17,9 +24,10 @@ flowchart LR
   UX["@ux-designer\nflows · wireframes · IA"]
   FG["@figma-designer *(optional)*\nFigma frames + tokens"]
   FA["@frontend-architect\ncomponent architecture"]
-  SP["/save-plan → docs/plans/\nTaskCreate tracked steps"]
+  SP["/save-plan → docs/work/<slug>/plans/\nTaskCreate tracked steps"]
   BD["@backend-developer"]
   FE["@frontend-developer"]
+  QA["@qa-engineer\ne2e/regression verify"]
   CR["@code-reviewer\nconventions + security"]
 
   FI --> LA
@@ -30,8 +38,9 @@ flowchart LR
   FG --> FA
   FA --> SP
   SP --> BD & FE
-  BD --> CR
-  FE --> CR
+  BD --> QA
+  FE --> QA
+  QA --> CR
 ```
 
 1. `@feature-investigator` → requirements/scope (spec/PRD-lite) before any code.
@@ -43,17 +52,20 @@ flowchart LR
 3. `@ux-designer` → user flows, journey map, IA, wireframes, state matrix,
    and interaction specs. Reads `.claude/design-conventions.md`; flags
    design-system gaps for `@frontend-architect`. Saves the spec to
-   `docs/solutions/`.
+   `docs/work/<slug>/solutions/`.
 4. `@figma-designer` *(optional)* → materializes the UX spec into Figma
    frames, components, auto-layout, and tokens via the official Figma MCP.
 5. `@frontend-architect` → component/rendering/state architecture informed
    by the UX spec; resolves any design-system gaps flagged upstream.
 6. Plan it — a diagram-rich plan (mermaid), then `/save-plan` →
-   `docs/plans/`. TaskCreate a tracked task list from the plan's phased
-   steps so status is visible; TaskUpdate each task as it completes.
+   `docs/work/<slug>/plans/`. TaskCreate a tracked task list from the plan's
+   phased steps so status is visible; TaskUpdate each task as it completes.
 7. Implement — `@backend-developer` and/or `@frontend-developer` write +
    verify the code; Tier-1 `rules/<lang>.md` auto-load per file type.
-8. `@code-reviewer` → checks correctness, security, *and* adherence to the
+8. `@qa-engineer` → verifies the implemented feature via e2e/regression
+   testing, evidence-backed (a separate, UI-level check from the unit/
+   integration tests in step 7).
+9. `@code-reviewer` → checks correctness, security, *and* adherence to the
    vendored conventions (file:line violations).
 
 ## Review or debug existing code
@@ -64,10 +76,10 @@ flowchart LR
 ## Design or implement infrastructure
 
 - `@cloud-architect` for up-front design (new environment, migration,
-  multi-cloud strategy) → design doc saved to `docs/solutions/`.
+  multi-cloud strategy) → design doc saved to `docs/work/<slug>/solutions/`.
 - `@cloud-architect` to **audit existing infrastructure** (cost, security,
   reliability, IaC drift) → review report saved to
-  `docs/architecture-reports/` with Critical/Important/Advisory findings.
+  `docs/work/<slug>/architecture-reports/` with Critical/Important/Advisory findings.
 - `@devops-engineer` implements the design or acts on the review's findings
   — Terraform/Kubernetes manifests, Dockerfiles, CI config, edge security
   (Cloudflare WAF/DDoS/Zero Trust or the hyperscaler-native equivalent), and
@@ -81,9 +93,9 @@ flowchart LR
 
 - `@backend-architect` (API/service) or `@frontend-architect`
   (component/rendering/state) produce a design doc → saved to
-  `docs/solutions/<date>-<slug>.md`.
+  `docs/work/<slug>/solutions/solution-<track>.md`.
 - `@architect-reviewer` evaluates an existing design → saved to
-  `docs/architecture-reports/<date>-<slug>.md`.
+  `docs/work/<slug>/architecture-reports/report.md`.
 - Record the decision with `/adr` (MADR) under `docs/adr/`.
 
 ## Assess legal impact before shipping a feature
