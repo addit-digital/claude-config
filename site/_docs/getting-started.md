@@ -42,7 +42,7 @@ common "why isn't this working" moment for new installs. See
 ## Verify it worked
 
 Run `/help` — you should see `@addit-harness:code-reviewer` and the other
-eleven subagents listed under Agents. If they're missing, re-run
+thirteen subagents listed under Agents. If they're missing, re-run
 `/addit-harness:setup` and check the plugin installed without errors.
 
 ## Alternative: copy-based install
@@ -52,7 +52,26 @@ still works — see [Other coding agents](../other-agents/) for the general
 `install.sh` flags. It's no longer run automatically by a plain
 `./install.sh` with no arguments.
 
-## Next
+## All docs
 
-- New to the mental model? Read [Concepts](../concepts/) next.
-- Want to know what each subagent does? Read [Subagents](../subagents/).
+The sidebar has the full list; here's the same thing with what each page
+actually covers, so you don't have to click through page by page to find it:
+
+**Start**
+- [Concepts](../concepts/) — the engineering loop, tiered conventions, curation philosophy, deterministic orchestration
+- [How dev-flow works](../dev-flow/) — phase-by-phase mechanics of the design-gate/review-gate loops
+
+**Reference**
+- [Subagents](../subagents/) — what each of the 13 subagents does and when it fires
+- [Skills & commands](../skills-commands/) — every `/slash-command` this plugin adds
+- [Model & cost](../model-cost/) — which subagent runs on which tier, and how to cut spend
+- [Enabling MCP](../mcp/) — connecting Jira, databases, and other optional integrations
+- [Other coding agents](../other-agents/) — Cursor / Kiro / Codex CLI support
+
+**Guides**
+- [Use cases](../use-cases/) — concrete workflows showing which configs fire together
+- [Extending](../extending/) — adding your own conventions, agents, or skills
+
+**Project**
+- [Roadmap](../roadmap/) — planned work and how to contribute
+- [Changelog](../changelog/) — what's shipped, release by release
