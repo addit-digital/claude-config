@@ -13,6 +13,7 @@ This folder is the source for the [live docs site](https://tools.addit.digital/h
 
 ## Reference
 - [Subagents](subagents.md)
+- [How dev-flow works](dev-flow.md) — deterministic design-gate/review-gate orchestration, phase by phase
 - [Skills & commands](skills-commands.md)
 - [Model & cost](model-cost.md)
 - [Enabling MCP](mcp.md)

@@ -41,7 +41,8 @@ implementation starts; a `Workflow` script has no way to pause mid-run and ask,
 so that gate lives in the surrounding skill instead, not the script. See
 `workflows/dev-flow-design.js` and `workflows/dev-flow-implement.js`, and
 `@qa-engineer` for the evidence-backed verification step the review-gate loop
-gates on.
+gates on. See [How dev-flow works](../dev-flow/) for the phase-by-phase
+mechanics and how the loops know when to stop.
 
 ## Language conventions — two tiers + per-project layer
 

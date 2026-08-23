@@ -1,6 +1,6 @@
 ---
 title: Enabling MCP
-nav_order: 6
+nav_order: 7
 nav_group: Reference
 ---
 

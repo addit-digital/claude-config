@@ -146,7 +146,7 @@ merge any custom permissions/hooks back from the backup).
 | `skills/go-conventions/` | `/go-conventions [--refresh]` — scan a Go repo and write `.claude/go-conventions.md` (project-specific layer on top of the global baseline) | Authored |
 | `skills/design-conventions/` | `/design-conventions [--refresh]` — scan a TS/React project's existing UI layer and write `.claude/design-conventions.md` (visual design language: tokens, type/spacing/color scales, component lib, layout rhythm, state patterns). For greenfield projects, `@frontend-architect` generates this file instead. | Authored |
 | `skills/setup/` | `/addit-harness:setup [--scope global\|project] [--link]` — places `CLAUDE.md`/`AGENTS.md`/`rules/`/`references/`/`settings.json` for Claude Code (the parts the plugin can't carry natively) | Authored |
-| `skills/dev-flow/` + `workflows/*.js` | `/dev-flow [what to build or fix]` — deterministic SDLC orchestration: investigate → design ⇄ `architect-reviewer` loop → **your approval gate** → implement → `qa-engineer` verifies → review ⇄ fix loop → re-verify. The loops run as `Workflow` scripts (`workflows/dev-flow-design.js`, `workflows/dev-flow-implement.js`); the skill holds the one human gate a script can't pause for. **Claude Code plugin install only** — relies on `${CLAUDE_PLUGIN_ROOT}` and the `Workflow` tool, neither of which exist under the legacy copy-based `install.sh --target claude` path or on Cursor/Kiro/Codex CLI; not synced by `install.sh` | Authored |
+| `skills/dev-flow/` + `workflows/*.js` | `/dev-flow [what to build or fix]` — deterministic SDLC orchestration: investigate → design ⇄ `architect-reviewer` loop → **your approval gate** → implement → `qa-engineer` verifies → review ⇄ fix loop → re-verify. The loops run as `Workflow` scripts (`workflows/dev-flow-design.js`, `workflows/dev-flow-implement.js`); the skill holds the one human gate a script can't pause for. See [How dev-flow works](https://tools.addit.digital/harness/docs/dev-flow/) for the phase-by-phase mechanics and loop-termination logic. **Claude Code plugin install only** — relies on `${CLAUDE_PLUGIN_ROOT}` and the `Workflow` tool, neither of which exist under the legacy copy-based `install.sh --target claude` path or on Cursor/Kiro/Codex CLI; not synced by `install.sh` | Authored |
 | `hooks/` | `SessionStart` hook — reminds the user to re-run `/addit-harness:setup` once the plugin's version has drifted past what was last synced (tracked via a version marker `setup.sh` writes per scope) | Authored |
 | `settings.json` | Default model + permissions + official plugins (`enabledPlugins`) — Claude Code only, placed by `/addit-harness:setup` or `install.sh --target claude` | Authored |
 | `mcp.example.json` | Disabled Atlassian/DB scaffolding (opt-in) | Reference config |
@@ -288,7 +288,8 @@ verifies → `@code-reviewer` ⇄ fix loop → re-verify — as deterministic `W
 scripts instead of hand-driving each step below yourself. The steps below still
 apply if you'd rather drive them by hand, or when the request doesn't fit the
 software-development-lifecycle shape `/dev-flow` is scoped to (e.g. legal-only or
-infra-only work).
+infra-only work). See [How dev-flow works](https://tools.addit.digital/harness/docs/dev-flow/)
+for the phase-by-phase mechanics and how the design/review loops know when to stop.
 
 ```mermaid
 flowchart LR

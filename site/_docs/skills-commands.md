@@ -1,6 +1,6 @@
 ---
 title: Skills & commands
-nav_order: 4
+nav_order: 5
 nav_group: Reference
 ---
 
@@ -20,7 +20,7 @@ try the `addit-harness:` prefix before assuming it's missing.
 | `/go-conventions [--refresh]` | Scan a Go repo and write `.claude/go-conventions.md` — the project-specific layer on top of the global Go baseline |
 | `/design-conventions [--refresh]` | Scan a TS/React project's existing UI layer and write `.claude/design-conventions.md` (tokens, type/spacing/color scales, component lib, layout rhythm, state patterns) |
 | `/addit-harness:setup [--scope global\|project] [--link]` | Places `CLAUDE.md`/`AGENTS.md`/`rules/`/`references/`/`settings.json` for Claude Code — the parts the plugin can't carry natively |
-| `/dev-flow [what to build or fix]` | Deterministic SDLC orchestration: investigate → design ⇄ `architect-reviewer` loop → your approval gate → implement → `qa-engineer` verifies → review ⇄ fix loop → re-verify. The loops run as `Workflow` scripts, not hand-driven `Agent` calls |
+| `/dev-flow [what to build or fix]` | Deterministic SDLC orchestration: investigate → design ⇄ `architect-reviewer` loop → your approval gate → implement → `qa-engineer` verifies → review ⇄ fix loop → re-verify. The loops run as `Workflow` scripts, not hand-driven `Agent` calls — see [How dev-flow works](../dev-flow/) for the full mechanics |
 
 `docs/work/<slug>/solutions/` (architecture designs) and
 `docs/work/<slug>/architecture-reports/` (review reports) are written directly

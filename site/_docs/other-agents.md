@@ -1,6 +1,6 @@
 ---
 title: Other coding agents
-nav_order: 7
+nav_order: 8
 nav_group: Reference
 ---
 

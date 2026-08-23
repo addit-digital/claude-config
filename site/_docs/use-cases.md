@@ -1,6 +1,6 @@
 ---
 title: Use cases
-nav_order: 8
+nav_order: 9
 nav_group: Guides
 ---
 
@@ -15,7 +15,8 @@ plain text for reference.
 verifies → `@code-reviewer` ⇄ fix loop → re-verify — as deterministic `Workflow`
 scripts instead of hand-driving each step below yourself. The steps below still
 apply if you'd rather drive them by hand, or when the request doesn't fit the
-software-development-lifecycle shape `/dev-flow` is scoped to.
+software-development-lifecycle shape `/dev-flow` is scoped to. See
+[How dev-flow works](../dev-flow/) for the phase-by-phase mechanics.
 
 ```mermaid
 flowchart LR
