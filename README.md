@@ -48,6 +48,7 @@ Prefer browsing in-repo instead? Start at
   - [Cursor / Kiro / Codex CLI](#cursor--kiro--codex-cli)
 - [What's in here](#whats-in-here)
   - [Language conventions — two tiers + per-project layer](#language-conventions--two-tiers--per-project-layer)
+- [How dev-flow works](#how-dev-flow-works)
 - [Other coding agents](#other-coding-agents)
   - [Iterating & giving feedback on plans or code](#iterating--giving-feedback-on-plans-or-code)
   - [Official plugins (declared in `settings.json`)](#official-plugins-declared-in-settingsjson)
@@ -146,7 +147,7 @@ merge any custom permissions/hooks back from the backup).
 | `skills/go-conventions/` | `/go-conventions [--refresh]` — scan a Go repo and write `.claude/go-conventions.md` (project-specific layer on top of the global baseline) | Authored |
 | `skills/design-conventions/` | `/design-conventions [--refresh]` — scan a TS/React project's existing UI layer and write `.claude/design-conventions.md` (visual design language: tokens, type/spacing/color scales, component lib, layout rhythm, state patterns). For greenfield projects, `@frontend-architect` generates this file instead. | Authored |
 | `skills/setup/` | `/addit-harness:setup [--scope global\|project] [--link]` — places `CLAUDE.md`/`AGENTS.md`/`rules/`/`references/`/`settings.json` for Claude Code (the parts the plugin can't carry natively) | Authored |
-| `skills/dev-flow/` + `workflows/*.js` | `/dev-flow [what to build or fix]` — deterministic SDLC orchestration: investigate → design ⇄ `architect-reviewer` loop → **your approval gate** → implement → `qa-engineer` verifies → review ⇄ fix loop → re-verify. The loops run as `Workflow` scripts (`workflows/dev-flow-design.js`, `workflows/dev-flow-implement.js`); the skill holds the one human gate a script can't pause for. See [How dev-flow works](https://tools.addit.digital/harness/docs/dev-flow/) for the phase-by-phase mechanics and loop-termination logic. **Claude Code plugin install only** — relies on `${CLAUDE_PLUGIN_ROOT}` and the `Workflow` tool, neither of which exist under the legacy copy-based `install.sh --target claude` path or on Cursor/Kiro/Codex CLI; not synced by `install.sh` | Authored |
+| `skills/dev-flow/` + `workflows/*.js` | `/dev-flow [what to build or fix]` — deterministic SDLC orchestration: investigate → design ⇄ `architect-reviewer` loop → **your approval gate** → implement → `qa-engineer` verifies → review ⇄ fix loop → re-verify. The loops run as `Workflow` scripts (`workflows/dev-flow-design.js`, `workflows/dev-flow-implement.js`); the skill holds the one human gate a script can't pause for. See [How dev-flow works](#how-dev-flow-works) for the phase-by-phase mechanics and loop-termination logic. **Claude Code plugin install only** — relies on `${CLAUDE_PLUGIN_ROOT}` and the `Workflow` tool, neither of which exist under the legacy copy-based `install.sh --target claude` path or on Cursor/Kiro/Codex CLI; not synced by `install.sh` | Authored |
 | `hooks/` | `SessionStart` hook — reminds the user to re-run `/addit-harness:setup` once the plugin's version has drifted past what was last synced (tracked via a version marker `setup.sh` writes per scope) | Authored |
 | `settings.json` | Default model + permissions + official plugins (`enabledPlugins`) — Claude Code only, placed by `/addit-harness:setup` or `install.sh --target claude` | Authored |
 | `mcp.example.json` | Disabled Atlassian/DB scaffolding (opt-in) | Reference config |
@@ -185,6 +186,91 @@ The Go reference is **codebase-derived** (not a third-party style guide) — it
 reflects the actual patterns in addit-digital/app-erp and expands per-project
 via `/go-conventions`. The **`code-reviewer` subagent checks adherence** to
 whichever conventions apply.
+
+## How dev-flow works
+
+`/dev-flow` automates the design-gate and review-gate rounds of the
+engineering loop above as real control flow — not the model remembering to
+keep looping correctly on its own. It's a hybrid, not a single mechanism: a
+skill alone can't guarantee it keeps looping right, and the `Workflow` tool
+alone can't pause mid-run to ask you anything, which conflicts with this
+repo's own hard rule that non-trivial work needs your explicit plan approval
+before implementation starts. So the design splits along that seam:
+
+- **`skills/dev-flow/SKILL.md`** (thin) — resolves the request, holds the one
+  human approval gate, and is the only place that talks to you.
+- **`workflows/dev-flow-design.js`** and **`workflows/dev-flow-implement.js`**
+  — real JavaScript run by the `Workflow` tool, no human interaction inside.
+
+```mermaid
+flowchart TD
+    A[New request] --> S1["skills/dev-flow: resolve track, needsUX, repo(s)"]
+    S1 --> WA["Workflow A: dev-flow-design.js"]
+    WA --> G{{"Human approves the plan\n(the one gate a script can't hold)"}}
+    G --> WB["Workflow B: dev-flow-implement.js"]
+    WB --> C[Human commits]
+```
+
+**Workflow A — investigate, design, plan.** Investigate only runs if the
+request's scope is genuinely unclear (`@feature-investigator` scopes it
+first); UX only runs if the work needs a fresh pass (`@ux-designer` ⇄
+`@figma-designer` ⇄ fidelity-check, looping until approved); Design runs one
+architect per track (`@backend-architect` and/or `@frontend-architect`, in
+parallel when the work spans both) ⇄ `@architect-reviewer`, feeding each
+round's findings into the next round's prompt so a retry is a refinement, not
+a blind re-roll; Plan writes the implementation plan and gets one more
+`@architect-reviewer` pass. `Workflow A` returns whether the design loop
+actually converged — if it capped out instead, the skill says so plainly when
+it shows you the plan, rather than presenting a capped-out draft the same way
+it'd present an approved one.
+
+**The human gate.** `Workflow A` runs to completion and returns; the skill
+shows you the plan and waits for an ordinary conversational approval — this
+isn't a pause *inside* a `Workflow` run, since there's no such thing.
+`Workflow B` is a separate call, made only after you approve. The state that
+survives between them is just the plan file already written to
+`docs/work/<slug>/plans/plan.md` — approving days later, even in a new
+session, is "read that file, call `Workflow B`." No special resume mechanism.
+
+**Workflow B — implement, verify, review, re-verify.**
+
+```mermaid
+flowchart LR
+    IM["Implement\nbackend/frontend-developer\n(sequential if same repo, else parallel)"] --> QA1["QA\n@qa-engineer verifies, evidence-backed"]
+    QA1 --> RV["Review\ncode-reviewer + optional pr-review-toolkit bundle"]
+    RV --> FX["Fix loop\nrouted per track, until clean or capped"]
+    FX --> QA2["QA re-run\n@qa-engineer re-verifies — gates the final result"]
+```
+
+Two tracks in the *same* repo implement sequentially, never in parallel, to
+avoid concurrent writes to one branch; genuinely separate repos run in
+parallel. `@qa-engineer` verifies with an evidence-backed report (a real exit
+code, screenshot, or log — never a bare "looks good"), then `@code-reviewer`
+(always present) plus, when installed, the `pr-review-toolkit` bundle review;
+findings route to the track they're tagged for; the fix loop repeats until
+clean or capped. **The QA re-run after the fix loop is what actually gates
+the final pass/fail** — not the pre-fix QA pass — and it runs even if the fix
+loop never reached clean, so the report reflects real final state either
+way. You still run `git commit` yourself.
+
+**How the loops know when to stop.** Every loop combines four signals:
+convergence (the real success condition), a hard round cap (a backstop so
+nothing runs forever), a token-budget guard, and a non-progress circuit
+breaker (aborts immediately if a round's findings exactly match the previous
+round's). The two caps are deliberately different, not copy-pasted: the
+design-gate loop caps at **3 rounds**, the review-gate fix loop at **2**. At a
+cap of 2, the circuit breaker can only ever compare on the very last allowed
+round, making it structurally unable to save any work — 3 is the minimum
+depth where "stop early" and "hit the cap anyway" are actually different
+outcomes.
+
+**If the `Workflow` tool isn't available**, the skill checks whether it's
+actually callable before using it, rather than assuming from configuration —
+if it isn't, `skills/dev-flow/SKILL.md` documents a full manual fallback: the
+identical phase order and loop logic, driven by direct sequential `@agent`
+calls instead of a script. Slower, same gates, same outcome. This is also why
+`dev-flow` is **Claude Code plugin install only** — see the file-inventory
+note above.
 
 ## Other coding agents
 
@@ -288,7 +374,7 @@ verifies → `@code-reviewer` ⇄ fix loop → re-verify — as deterministic `W
 scripts instead of hand-driving each step below yourself. The steps below still
 apply if you'd rather drive them by hand, or when the request doesn't fit the
 software-development-lifecycle shape `/dev-flow` is scoped to (e.g. legal-only or
-infra-only work). See [How dev-flow works](https://tools.addit.digital/harness/docs/dev-flow/)
+infra-only work). See [How dev-flow works](#how-dev-flow-works)
 for the phase-by-phase mechanics and how the design/review loops know when to stop.
 
 ```mermaid

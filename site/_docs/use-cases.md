@@ -4,9 +4,7 @@ nav_order: 9
 nav_group: Guides
 ---
 
-Concrete workflows showing which configs fire together. On GitHub the
-diagram below renders as a mermaid flowchart; on this site it's shown as
-plain text for reference.
+Concrete workflows showing which configs fire together.
 
 ## Build a new feature
 
