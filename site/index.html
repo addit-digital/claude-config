@@ -2,7 +2,7 @@
 layout: default
 title: Wire your agent into a full product team
 description: >-
-  addit-harness installs an opinionated plan → verify → commit loop, twelve
+  addit-harness installs an opinionated plan → verify → commit loop, fourteen
   specialized subagents, and auto-loaded language conventions into Claude
   Code, Cursor, Codex CLI, or Kiro — curated from established sources, not
   hand-rolled.
@@ -15,7 +15,7 @@ description: >-
         <h1>Wire your agent into a full <em>product&nbsp;team</em></h1>
         <p class="lede">
           A coding agent's default config is a blank slate. <code>addit-harness</code> installs
-          an opinionated plan → verify → commit loop, twelve specialized subagents, and
+          an opinionated plan → verify → commit loop, fourteen specialized subagents, and
           auto-loaded language conventions — curated from established sources, not hand-rolled.
         </p>
         <div class="cta-row">
@@ -143,6 +143,8 @@ description: >-
             <tr><td>Language conventions</td><td class="bad" data-label="Blank slate">Re-pasted into context every session</td><td class="good" data-label="With addit-harness">Auto-loaded per file type — Go, Java, TypeScript</td></tr>
             <tr><td>Code review</td><td class="bad" data-label="Blank slate">"Hey Claude, can you review this?"</td><td class="good" data-label="With addit-harness">@code-reviewer enforces conventions with file:line citations</td></tr>
             <tr><td>UX &amp; design</td><td class="bad" data-label="Blank slate">Describe it and hope</td><td class="good" data-label="With addit-harness">@ux-designer → @figma-designer → @frontend-architect pipeline</td></tr>
+            <tr><td>Feature build</td><td class="bad" data-label="Blank slate">Hand-drive every Agent call yourself, every time</td><td class="good" data-label="With addit-harness">/dev-flow — deterministic design-gate + review-gate loops, one human approval gate</td></tr>
+            <tr><td>e2e/regression QA</td><td class="bad" data-label="Blank slate">Manual click-through before every release</td><td class="good" data-label="With addit-harness">@qa-engineer — evidence-backed verification, web + mobile</td></tr>
             <tr><td>New machine</td><td class="bad" data-label="Blank slate">Redo everything by hand</td><td class="good" data-label="With addit-harness">Three commands</td></tr>
           </tbody>
         </table>
@@ -167,8 +169,8 @@ description: >-
         </div>
         <div class="feature">
           <span class="feature-index">02 · AGENTS</span>
-          <h3>12 specialized subagents</h3>
-          <p>Legal compliance, UX design, backend/frontend/cloud architecture, Go/Java/TS implementation, and DevOps — each scoped, each with its own model tier.</p>
+          <h3>14 specialized subagents</h3>
+          <p>Legal compliance, UX design, backend/frontend/cloud architecture, Go/Java/TS implementation, DevOps, and e2e/regression QA — each scoped, each with its own model tier.</p>
         </div>
         <div class="feature">
           <span class="feature-index">03 · CONVENTIONS</span>
@@ -201,7 +203,7 @@ description: >-
           <div class="tag">How it works</div>
           <h2>One feature, six handoffs</h2>
         </div>
-        <p class="section-desc">A concrete build, start to ship — the subagents from "What's wired in," in the order they actually fire.</p>
+        <p class="section-desc">A concrete build, start to ship — the subagents from "What's wired in," in the order they actually fire. <code>/dev-flow</code> automates this whole sequence as one deterministic run, with a single approval gate before implementation starts.</p>
       </div>
       <div class="pipeline">
         <div class="pipeline-step">
@@ -226,6 +228,11 @@ description: >-
         </div>
         <div class="pipeline-step">
           <span class="pipeline-step-index">05</span>
+          <p class="pipeline-step-name">Verify</p>
+          <p class="pipeline-step-who">@qa-engineer</p>
+        </div>
+        <div class="pipeline-step">
+          <span class="pipeline-step-index">06</span>
           <p class="pipeline-step-name">Review</p>
           <p class="pipeline-step-who">@code-reviewer</p>
         </div>
