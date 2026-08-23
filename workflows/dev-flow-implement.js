@@ -119,7 +119,7 @@ while (!clean && round < REVIEW_MAX_ROUNDS) {
   const key = sortedKey(findings)
   if (lastKey && key === lastKey) { log('Review loop not converging (same findings again), aborting'); break }
   lastKey = key
-  await parallel(TRACKS.map(async t => {
+  await parallel(TRACKS.map(t => async () => {
     const relevant = findings.filter(f => !f.track || f.track === t.kind)
     if (!relevant.length) return
     const fixed = await agent(UNTRUSTED + `Fix these review findings in ${t.repo}: ${JSON.stringify(relevant)}`, { agentType: t.developerType, phase: 'Review' })

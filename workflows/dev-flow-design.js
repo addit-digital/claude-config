@@ -93,7 +93,7 @@ while (!approved && round < DESIGN_MAX_ROUNDS) {
     { agentType: t.architectType, phase: 'Design' }
   ).then(d => d && { ...t, design: d })))).filter(Boolean)
   if (designs.length === 0) { log(`Design round ${round + 1}: all architect agents failed or were skipped`); round++; continue }
-  await parallel(designs.map(async d => {
+  await parallel(designs.map(d => async () => {
     const wrote = await agent(UNTRUSTED + `Write this design to ${solutionPath(d)}: ${d.design}`, { agentType: d.architectType, phase: 'Design' })
     if (!wrote) log(`Design round ${round + 1}: failed to write ${d.kind} solution doc to ${solutionPath(d)}`)
   }))
