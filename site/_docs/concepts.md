@@ -28,6 +28,21 @@ and auto-loads into every session. Two hard rules fall out of it:
   `/save-plan` persists plans to `docs/work/<slug>/plans/` for viewing in an IDE
   or on GitHub.
 
+## Deterministic orchestration — `/dev-flow`
+
+The engineering loop above is hand-driven by default — you decide when to
+invoke which subagent, one `Agent` call at a time, every session. `/dev-flow`
+automates the design-gate and review-gate rounds of that same loop as real
+`Workflow`-tool control flow instead: a `while` loop with a convergence check,
+a hard round cap, a token-budget guard, and a non-progress circuit breaker —
+not the model remembering to keep looping correctly on its own. The one step
+that stays a plain conversational turn is **your approval of the plan** before
+implementation starts; a `Workflow` script has no way to pause mid-run and ask,
+so that gate lives in the surrounding skill instead, not the script. See
+`workflows/dev-flow-design.js` and `workflows/dev-flow-implement.js`, and
+`@qa-engineer` for the evidence-backed verification step the review-gate loop
+gates on.
+
 ## Language conventions — two tiers + per-project layer
 
 - **Tier 1 — `rules/{java,go,typescript}.md`** carry `paths:` frontmatter and
